@@ -35,6 +35,7 @@ export function isTracking() {
 
 export function trigger(target, key) {
 	let depsMap = targetMap.get(target)
+	if (!depsMap) return
 	let dep = depsMap.get(key)
 	triggerEffects(dep)
 }
@@ -49,7 +50,7 @@ export function triggerEffects(dep) {
 	}
 }
 
-class ReactiveEffect {
+export class ReactiveEffect {
 	private _fn: any
 	deps = []
 	active = true
