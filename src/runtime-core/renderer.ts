@@ -5,7 +5,13 @@ export function render(vnode, container) {
 }
 
 function patch(vnode, container) {
+	// TODO 
+	// processElement(vnode, container)
 	processComponent(vnode, container)
+}
+
+function processElement(vnode, container) {
+
 }
 
 function processComponent(vnode, container) {
