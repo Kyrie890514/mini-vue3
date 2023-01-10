@@ -44,3 +44,18 @@ export function isRef(value) {
 export function unRef(ref) {
 	return isRef(ref) ? ref.value : ref
 }
+
+export function proxyRefs(objectWithRefs) {
+	return new Proxy(objectWithRefs, {
+		get(target, key) {
+			return unRef(Reflect.get(target, key))
+		},
+		set(target, key, newValue) {
+			if (isRef(target[key]) && !isRef(newValue)) {
+				return (target[key].value = newValue)
+			} else {
+				return Reflect.set(target, key, newValue)
+			}
+		}
+	})
+}
