@@ -6,7 +6,7 @@ let activeEffect
 let shouldTrack = false
 
 export function track(target, key) {
-	if (activeEffect && shouldTrack) {
+	if (isTracking()) {
 		let depsMap = targetMap.get(target)
 		if (!depsMap) {
 			depsMap = new Map()
@@ -17,17 +17,29 @@ export function track(target, key) {
 			dep = new Set()
 			depsMap.set(key, dep)
 		}
-		if (dep.has(activeEffect)) {
-			return
-		}
-		dep.add(activeEffect)
-		activeEffect.deps.push(dep)
+		trackEffects(dep)
 	}
+}
+
+export function trackEffects(dep) {
+	if (dep.has(activeEffect)) {
+		return
+	}
+	dep.add(activeEffect)
+	activeEffect.deps.push(dep)
+}
+
+export function isTracking() {
+	return !!(shouldTrack && activeEffect)
 }
 
 export function trigger(target, key) {
 	let depsMap = targetMap.get(target)
 	let dep = depsMap.get(key)
+	triggerEffects(dep)
+}
+
+export function triggerEffects(dep) {
 	for (const effect of dep) {
 		if (effect.scheduler) {
 			effect.scheduler()
