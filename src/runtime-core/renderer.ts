@@ -81,4 +81,3 @@ function processText(vnode: any, container: any) {
 	const textNode = vnode.el = document.createTextNode(children)
 	container.append(textNode)
 }
-
