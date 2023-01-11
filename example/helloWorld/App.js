@@ -8,7 +8,13 @@ export const App = {
 			'div',
 			{
 				id: 'root',
-				class: ['Kyrie', '890514']
+				class: ['Kyrie', '890514'],
+				onClick() {
+					console.log('click')
+				},
+				onMousedown() {
+					console.log('mousedown')
+				}
 			},
 			// 'Hello, ' + this.msg
 			// 'Hello, world.'
