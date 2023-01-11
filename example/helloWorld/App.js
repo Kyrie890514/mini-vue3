@@ -1,16 +1,18 @@
 import { h } from '../../lib/mini-vue3.esm.js'
 
+window.Kyrie = null
 export const App = {
 	render() {
+		window.Kyrie = this
 		return h(
 			'div',
 			{
 				id: 'root',
 				class: ['Kyrie', '890514']
 			},
-			// 'Hello, ' + this.msg
+			'Hello, ' + this.msg
 			// 'Hello, world.'
-			[h('span', {}, 'Hello '), h('span', {}, 'world.')]
+			// [h('span', {}, 'Hello '), h('span', {}, 'world.')]
 		)
 	},
 	setup() {
