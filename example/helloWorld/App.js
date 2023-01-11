@@ -10,9 +10,9 @@ export const App = {
 				id: 'root',
 				class: ['Kyrie', '890514']
 			},
-			'Hello, ' + this.msg
+			// 'Hello, ' + this.msg
 			// 'Hello, world.'
-			// [h('span', {}, 'Hello '), h('span', {}, 'world.')]
+			[h('span', {}, 'Hello '), h('span', {}, 'world.')]
 		)
 	},
 	setup() {
