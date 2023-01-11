@@ -4,7 +4,6 @@ import { Foo } from './Foo.js'
 window.Kyrie = null
 export const App = {
 	name: 'App',
-	props: {},
 	render() {
 		window.Kyrie = this
 		return h(
