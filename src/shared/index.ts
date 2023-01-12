@@ -22,3 +22,5 @@ export const toHandlerKey = (str: string) => {
 	str = camelize(str)
 	return str ? 'on' + capitalize(str) : ''
 }
+
+export const EMPTY_OBJ = {}
