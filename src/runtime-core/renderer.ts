@@ -10,7 +10,9 @@ export function createRenderer(options) {
 		createElement: hostCreateElement,
 		patchProp: hostPatchProp,
 		insert: hostInsert,
-		createTextNode: hostCreateTextNode
+		createTextNode: hostCreateTextNode,
+		remove: hostRemove,
+		setElementText: hostSetElementText
 	} = options
 
 	function render(vnode, container) {
@@ -37,16 +39,42 @@ export function createRenderer(options) {
 
 	function processElement(n1, n2, container, parentComponent) {
 		if (n1) {
-			patchElement(n1, n2, container)
+			patchElement(n1, n2, container, parentComponent)
 		} else {
 			mountElement(n2, container, parentComponent)
 		}
 	}
 
-	function patchElement(n1, n2, container) {
-		console.log('patchElement', n1, n2)
+	function patchElement(n1, n2, container, parentComponent) {
 		const el = n2.el = n1.el
+		patchChildren(n1, n2, el, parentComponent)
 		patchProps(el, n1.props || EMPTY_OBJ, n2.props || EMPTY_OBJ)
+	}
+
+	function patchChildren(n1, n2, container, parentComponent) {
+		const oldShapeFlag = n1.shapeFlag
+		const newShapeFlag = n2.shapeFlag
+		const oldChildren = n1.children
+		const newChildren = n2.children
+		if (newShapeFlag & ShapeFlags.TEXT_CHILDREN) {
+			if (oldShapeFlag & ShapeFlags.ARRAY_CHILDREN) {
+				unMountChildren(n1.children)
+			}
+			if (oldChildren !== newChildren) {
+				hostSetElementText(container, newChildren)
+			}
+		} else {
+			if (oldShapeFlag & ShapeFlags.TEXT_CHILDREN) {
+				hostSetElementText(container, '')
+				mountChildren(n2, container, parentComponent)
+			}
+		}
+	}
+
+	function unMountChildren(children) {
+		for (const child of children) {
+			hostRemove(child.el)
+		}
 	}
 
 	function patchProps(el, oldProps: any, newProps: any) {
@@ -70,7 +98,7 @@ export function createRenderer(options) {
 		const { type, children, props, shapeFlag } = vnode
 		const el = vnode.el = hostCreateElement(type)
 		if (shapeFlag & ShapeFlags.TEXT_CHILDREN) {
-			el.textContent = children
+			hostSetElementText(el, children)
 		} else if (shapeFlag & ShapeFlags.ARRAY_CHILDREN) {
 			mountChildren(vnode, el, parentComponent)
 		}
