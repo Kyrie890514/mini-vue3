@@ -112,6 +112,39 @@ export function createRenderer(options) {
 				hostRemove(c1[i].el)
 				i++
 			}
+		} else {
+			let s1 = i, s2 = i
+			const toBePatched = e2 - s2 + 1
+			let patched = 0
+			const keyToNewIndexMap = new Map()
+			for (let i = s2; i <= e2; i++) {
+				const newChild = c2[i]
+				keyToNewIndexMap.set(newChild.key, i)
+			}
+			for (let i = s1; i <= e1; i++) {
+				const oldChild = c1[i]
+				if (patched >= toBePatched) {
+					hostRemove(oldChild.el)
+					continue
+				}
+				let newIndex
+				if (oldChild.key !== null) {
+					newIndex = keyToNewIndexMap.get(oldChild.key)
+				} else {
+					for (let j = s2; j < e2; j++) {
+						if (isSameVnodeType(oldChild, c2[j])) {
+							newIndex = j
+							break
+						}
+					}
+				}
+				if (!newIndex) {
+					hostRemove(oldChild.el)
+				} else {
+					patch(oldChild, c2[newIndex], container, parentComponent, null)
+					patched++
+				}
+			}
 		}
 	}
 

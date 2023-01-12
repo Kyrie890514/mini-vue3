@@ -33,16 +33,16 @@ import { ref, h } from '../../lib/mini-vue3.esm.js'
 // 3. add right
 // (a b)
 // (a b) c d
-const oldChildren = [
-	h('p', { key: 'A' }, 'A'),
-	h('p', { key: 'B' }, 'B'),
-]
-const newChildren = [
-	h('p', { key: 'A' }, 'A'),
-	h('p', { key: 'B' }, 'B'),
-	h('p', { key: 'C' }, 'C'),
-	h('p', { key: 'D' }, 'D'),
-]
+// const oldChildren = [
+// 	h('p', { key: 'A' }, 'A'),
+// 	h('p', { key: 'B' }, 'B'),
+// ]
+// const newChildren = [
+// 	h('p', { key: 'A' }, 'A'),
+// 	h('p', { key: 'B' }, 'B'),
+// 	h('p', { key: 'C' }, 'C'),
+// 	h('p', { key: 'D' }, 'D'),
+// ]
 
 // 4. add left
 // (a b)
@@ -85,6 +85,47 @@ const newChildren = [
 // 	h('p', { key: 'A' }, 'A'),
 // 	h('p', { key: 'B' }, 'B'),
 // ]
+
+// 7.
+// a b (c d) f g
+// a b (e c) f g
+// const oldChildren = [
+// 	h('p', { key: 'A' }, 'A'),
+// 	h('p', { key: 'B' }, 'B'),
+// 	h('p', { key: 'C', id: 'c-old' }, 'C'),
+// 	h('p', { key: 'D' }, 'D'),
+// 	h('p', { key: 'F' }, 'F'),
+// 	h('p', { key: 'G' }, 'G'),
+// ]
+// const newChildren = [
+// 	h('p', { key: 'A' }, 'A'),
+// 	h('p', { key: 'B' }, 'B'),
+// 	h('p', { key: 'E' }, 'E'),
+// 	h('p', { key: 'C', id: 'c-new' }, 'C'),
+// 	h('p', { key: 'F' }, 'F'),
+// 	h('p', { key: 'G' }, 'G'),
+// ]
+
+// 8.
+// a b (c e d) f g
+// a b (e c) f g
+const oldChildren = [
+	h('p', { key: 'A' }, 'A'),
+	h('p', { key: 'B' }, 'B'),
+	h('p', { key: 'C', id: 'c-old' }, 'C'),
+	h('p', { key: 'E' }, 'E'),
+	h('p', { key: 'D' }, 'D'),
+	h('p', { key: 'F' }, 'F'),
+	h('p', { key: 'G' }, 'G'),
+]
+const newChildren = [
+	h('p', { key: 'A' }, 'A'),
+	h('p', { key: 'B' }, 'B'),
+	h('p', { key: 'E' }, 'E'),
+	h('p', { key: 'C', id: 'c-new' }, 'C'),
+	h('p', { key: 'F' }, 'F'),
+	h('p', { key: 'G' }, 'G'),
+]
 
 export default {
 	name: 'ArrayToText',
