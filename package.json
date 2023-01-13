@@ -7,8 +7,9 @@
 	"type": "module",
 	"scripts": {
 		"test": "jest",
+		"test-watch": "jest --watch",
 		"build": "rollup -c rollup.config.js",
-		"watch": "rollup -c rollup.config.js --watch"
+		"build-watch": "rollup -c rollup.config.js --watch"
 	},
 	"keywords": [],
 	"author": "",
