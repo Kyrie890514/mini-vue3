@@ -2,6 +2,7 @@ import { effect } from "../reactivity/effect"
 import { EMPTY_OBJ } from "../shared"
 import { ShapeFlags } from "../shared/shapeFlags"
 import { createComponentInstance, setupComponent } from "./component"
+import { shouldUpdateComponent } from "./componentUpdateUtils"
 import { createAppApi } from "./createApp"
 import { Fragment, Text } from "./vnode"
 
@@ -222,17 +223,32 @@ export function createRenderer(options) {
 	}
 
 	function processComponent(n1, n2, container, parentComponent, anchor) {
-		mountComponent(n2, container, parentComponent, anchor)
+		if (!n1) {
+			mountComponent(n2, container, parentComponent, anchor)
+		} else {
+			updateComponent(n1, n2)
+		}
+	}
+
+	function updateComponent(n1, n2) {
+		const instance = n2.component = n1.component
+		if (shouldUpdateComponent(n1, n2)) {
+			instance.next = n2
+			instance.update()
+		} else {
+			n2.el = n1.el
+			instance.vnode = n2
+		}
 	}
 
 	function mountComponent(initialVnode, container, parentComponent, anchor) {
-		const instance = createComponentInstance(initialVnode, parentComponent)
+		const instance = initialVnode.component = createComponentInstance(initialVnode, parentComponent)
 		setupComponent(instance)
 		setupRenderEffect(instance, initialVnode, container, anchor)
 	}
 
 	function setupRenderEffect(instance: any, initialVnode: any, container: any, anchor) {
-		effect(() => {
+		instance.update = effect(() => {
 			if (!instance.isMounted) {
 				const { proxy } = instance
 				const subTree = instance.subTree = instance.render.call(proxy)
@@ -240,12 +256,22 @@ export function createRenderer(options) {
 				initialVnode.el = subTree.el
 				instance.isMounted = true
 			} else {
-				const { proxy, subTree: prevSubTree } = instance
+				const { proxy, subTree: prevSubTree, next: newVnode, vnode: oldVnode } = instance
+				if (newVnode) {
+					newVnode.el = oldVnode.el
+					updateComponentPreRender(instance, newVnode)
+				}
 				const subTree = instance.subTree = instance.render.call(proxy)
 				instance.subTree = subTree
 				patch(prevSubTree, subTree, container, instance, anchor)
 			}
 		})
+	}
+
+	function updateComponentPreRender(instance, newVnode) {
+		instance.vnode = newVnode
+		instance.next = null
+		instance.props = newVnode.props
 	}
 
 	function processFragment(n1, n2: any, container: any, parentComponent, anchor) {
