@@ -9,8 +9,10 @@ export function transform(root, options = {}) {
 }
 
 function traverseNode(node: any, context: any) {
+	const exitFns: any = []
 	for (const transform of context.nodeTransforms) {
-		transform(node)
+		const onExit = transform(node, context)
+		onExit && exitFns.push(onExit)
 	}
 	switch (node.type) {
 		case NodeTypes.INTERPOLATION:
@@ -20,6 +22,10 @@ function traverseNode(node: any, context: any) {
 		case NodeTypes.ELEMENT:
 			traverseChildren(node, context)
 			break
+	}
+	let i = exitFns.length
+	while (i--) {
+		exitFns[i]()
 	}
 }
 
@@ -45,5 +51,10 @@ function createTransformContext(root: any, options: any) {
 }
 
 function createRootCodegen(root: any) {
-	root.codegenNode = root.children[0]
+	const child = root.children[0]
+	if (child.type === NodeTypes.ELEMENT) {
+		root.codegenNode = child.codegenNode
+	} else {
+		root.codegenNode = root.children[0]
+	}
 }

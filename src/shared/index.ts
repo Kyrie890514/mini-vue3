@@ -4,6 +4,8 @@ export const isObject = (raw) => {
 	return raw !== null && typeof raw === 'object'
 }
 
+export const isString = val => typeof val === 'string'
+
 export const hasChanged = (oldValue, newValue) => !Object.is(oldValue, newValue)
 
 export const isOn = (key: string) => /^on[A-Z]/.test(key)
