@@ -26,6 +26,8 @@ export function createVnode(type, props?, children?) {
 	return vnode
 }
 
+export { createVnode as createElementVnode }
+
 function getShapeFlag(type) {
 	return typeof type === 'string'
 		? ShapeFlags.ELEMENT
